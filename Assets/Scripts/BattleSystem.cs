@@ -51,7 +51,10 @@ public class BattleSystem : MonoBehaviour{
 		enemyHUD.SetHUD(enemyUnit, false);
 
 		yield return new WaitForSeconds(2f);
-
+		
+		state = BattleState.PLAYERTURN;
+		startListen();
+		/*
 		// radomize between the player and the enemy's turn
 		if(state == BattleState.START){
 			int num = Random.Range(1, 2);
@@ -64,7 +67,7 @@ public class BattleSystem : MonoBehaviour{
 				StartCoroutine(EnemyTurn());
 				Debug.Log("yo");
 			}
-		}
+		}*/
 	}
 
 	void PlayerTurn(){
@@ -83,20 +86,119 @@ public class BattleSystem : MonoBehaviour{
 
 			// switch to the enemy's turn
 			state = BattleState.ENEMYTURN;
-			StartCoroutine(EnemyTurn());
+			StartCoroutine(EnemyTurn(power));
 		}   
 	}
 
-	IEnumerator EnemyTurn(){
+	IEnumerator EnemyTurn(int power){
 		dialogueText.text = "Enemy turn, waiting for their power!";
 		yield return new WaitForSeconds(3f);
 		int randomPower = Random.Range(0, enemyUnit.currentPower);
 		Debug.Log(randomPower);
+		//enemyHUD.updatePower(enemyUnit.currentPower);
 
 		bool checkPower = enemyUnit.TakePower(randomPower);
 		dialogueText.text = "Enemy's power chosen!";
 		yield return new WaitForSeconds(2f);
+		StartCoroutine(decide(power, randomPower));
+		
+	}
+	
+
+	IEnumerator decide(int playerPower, int enemyPower) {
+		Debug.Log("in decide");
+		bool playerisDead = false;
+		bool enemyisDead = false;
+		
+		if (playerPower > enemyPower) {
+			Debug.Log("player wins");
+			yield return new WaitForSeconds(2f);
+			
+			// healling the player back to full
+			if(playerUnit.currentHP == 10) {
+				playerUnit.currentHP = playerUnit.maxHP;
+				playerHUD.SetHP(playerUnit.currentHP);
+			} else {
+				enemyisDead = enemyUnit.TakeDamage(playerUnit.damage);
+				yield return new WaitForSeconds(2f);
+				enemyHUD.SetHP(enemyUnit.currentHP);
+			}
+			//enemyHUD.updatePower(enemyUnit.currentPower);
+			//playerHUD.updatePower(playerUnit.currentPower);
+		} else if (playerPower < enemyPower) {
+			Debug.Log("enemy wins");
+			yield return new WaitForSeconds(2f);
+
+			if(enemyUnit.currentHP == 10) {
+				enemyUnit.currentHP = enemyUnit.maxHP;
+				enemyHUD.SetHP(enemyUnit.currentHP);
+			} else {
+				playerisDead = playerUnit.TakeDamage(enemyUnit.damage);
+				yield return new WaitForSeconds(2f);
+				playerHUD.SetHP(playerUnit.currentHP);
+			}
+			//enemyHUD.updatePower(enemyUnit.currentPower);
+			//playerHUD.updatePower(playerUnit.currentPower);
+		} else {
+			Debug.Log("Equal scores");
+			yield return new WaitForSeconds(2f);
+		}
+		
+
+		dialogueText.text = "Deciding!";
+		yield return new WaitForSeconds(1f);		
 		dialogueText.text = "Your turn!";
+
+		if (playerisDead) {
+			state = BattleState.LOST;
+			EndBattle();
+		} else if (enemyisDead) {
+			state = BattleState.WON;
+			EndBattle();
+		} 
+
+	}
+	
+	/*
+	namespace Namespace {
+    
+		using System;
+		
+		public static class Module {
+			
+			public static object print_hp(int first_score, int second_score) {
+				var end = false;
+				var first_hp = 20;
+				var second_hp = 20;
+				while (!end) {
+					first_score = power;
+					second_score = randomPower;
+					if (first_score > second_score) {
+						second_hp -= 10;
+						if (first_hp == 10) {
+							first_hp += 10;
+						}
+					} else if (second_score > first_score) {
+						first_hp -= 10;
+						if (second_hp == 10) {
+							second_hp += 10;
+						}
+					}
+					if (first_hp == 0) {
+						Console.WriteLine("Second player wins!");
+						end = true;
+					} else if (second_hp == 0) {
+						Console.WriteLine("First player wins!");
+						end = true;
+					} else {
+						continue;
+					}
+				}
+			}
+		}
+	}
+		/*
+	
 		/*
 		// check if the enemy is dead after the attack 
 		bool isDead = playerUnit.TakeDamage(enemyUnit.damage);
@@ -112,8 +214,8 @@ public class BattleSystem : MonoBehaviour{
 			state = BattleState.PLAYERTURN;
 			PlayerTurn();
 		}
-		*/
-	}
+		
+	}*/
 
 	void EndBattle(){
 		if(state == BattleState.WON){
