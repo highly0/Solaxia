@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST }
 
@@ -26,10 +27,18 @@ public class BattleSystem : MonoBehaviour{
 	public Button button;
     public InputField input;
 
+	public SoundManagerScript SoundFX;
+	public int numCoins;
+	public int earn;
+
+	public GameObject returnButton;
+
     // Start is called before the first frame update
     void Start(){
 		state = BattleState.START;
-		StartCoroutine(SetupBattle());	
+		StartCoroutine(SetupBattle());
+		numCoins  =  PlayerPrefs.GetInt("coins");
+		earn = PlayerPrefs.GetInt("earn");
     }
 
 	void startListen() {
@@ -37,13 +46,16 @@ public class BattleSystem : MonoBehaviour{
 		button.onClick.AddListener(PlayerTurn);
 	}
 
+
 	// setting everything up for the battle
 	IEnumerator SetupBattle(){
 		GameObject playerGO = Instantiate(playerPrefab, playerBattleStation);
-		playerUnit = playerGO.GetComponent<Unit>();
+		GameObject playerChild = playerGO.transform.GetChild(0).gameObject;
+		playerUnit = playerChild.GetComponent<Unit>();
 
 		GameObject enemyGO = Instantiate(enemyPrefab, enemyBattleStation);
-		enemyUnit = enemyGO.GetComponent<Unit>();
+		GameObject enemyChild = enemyGO.transform.GetChild(0).gameObject;
+		enemyUnit = enemyChild.GetComponent<Unit>();
 
 		dialogueText.text = playerUnit.unitName + " vs. " + enemyUnit.unitName;
 
@@ -54,20 +66,6 @@ public class BattleSystem : MonoBehaviour{
 		
 		state = BattleState.PLAYERTURN;
 		startListen();
-		/*
-		// radomize between the player and the enemy's turn
-		if(state == BattleState.START){
-			int num = Random.Range(1, 2);
-			MonoBehaviour.print(num);
-			if(num == 1) {
-				state = BattleState.PLAYERTURN;
-				startListen();
-			} else {
-				state = BattleState.ENEMYTURN;
-				StartCoroutine(EnemyTurn());
-				Debug.Log("yo");
-			}
-		}*/
 	}
 
 	void PlayerTurn(){
@@ -92,136 +90,149 @@ public class BattleSystem : MonoBehaviour{
 
 	IEnumerator EnemyTurn(int power){
 		dialogueText.text = "Enemy turn, waiting for their power!";
-		yield return new WaitForSeconds(3f);
+		yield return new WaitForSeconds(2f);
 		int randomPower = Random.Range(0, enemyUnit.currentPower);
 		Debug.Log(randomPower);
 		//enemyHUD.updatePower(enemyUnit.currentPower);
 
 		bool checkPower = enemyUnit.TakePower(randomPower);
 		dialogueText.text = "Enemy's power chosen!";
-		yield return new WaitForSeconds(2f);
+		yield return new WaitForSeconds(1f);
 		StartCoroutine(decide(power, randomPower));
 		
 	}
 	
 
 	IEnumerator decide(int playerPower, int enemyPower) {
-		Debug.Log("in decide");
 		bool playerisDead = false;
 		bool enemyisDead = false;
+
+		dialogueText.text = "Deciding...";
+		yield return new WaitForSeconds(3f);
 		
 		if (playerPower > enemyPower) {
-			Debug.Log("player wins");
-			yield return new WaitForSeconds(2f);
 			
 			// healling the player back to full
 			if(playerUnit.currentHP == 10) {
+				SoundFX.PlaySound("heal");
+				dialogueText.text = "Back to full health!";
+				yield return new WaitForSeconds(1f);
 				playerUnit.currentHP = playerUnit.maxHP;
 				playerHUD.SetHP(playerUnit.currentHP);
-			} else {
+			} else { // attack the opponent
+				dialogueText.text = "Your attack was succesfull!";
+				// attacking the enemy
+				playerUnit.Attack(enemyUnit);
+				
+				
+				yield return new WaitForSeconds(0.5f);
+				SoundFX.PlaySound("hit");
+				// enemy taking damage
+				enemyUnit.Damage();
+
+				// return to the original position
+				yield return new WaitForSeconds(1.5f);
+				playerUnit.returnPos();
+
 				enemyisDead = enemyUnit.TakeDamage(playerUnit.damage);
 				yield return new WaitForSeconds(2f);
 				enemyHUD.SetHP(enemyUnit.currentHP);
 			}
-			//enemyHUD.updatePower(enemyUnit.currentPower);
-			//playerHUD.updatePower(playerUnit.currentPower);
 		} else if (playerPower < enemyPower) {
-			Debug.Log("enemy wins");
-			yield return new WaitForSeconds(2f);
-
 			if(enemyUnit.currentHP == 10) {
+				SoundFX.PlaySound("heal");
+				dialogueText.text = "Enemy health is regained!";
+				yield return new WaitForSeconds(1f);
 				enemyUnit.currentHP = enemyUnit.maxHP;
 				enemyHUD.SetHP(enemyUnit.currentHP);
 			} else {
+				dialogueText.text = "Enemy's attack was succesfull!";
+				// attacking the player
+				enemyUnit.Attack(playerUnit);
+				
+
+				yield return new WaitForSeconds(2f);
+				SoundFX.PlaySound("hit");
+				// player taking damage 
+				playerUnit.Damage();
+
+				// return to the original position
+				yield return new WaitForSeconds(1.5f);
+				enemyUnit.returnPos();
+
 				playerisDead = playerUnit.TakeDamage(enemyUnit.damage);
 				yield return new WaitForSeconds(2f);
 				playerHUD.SetHP(playerUnit.currentHP);
 			}
-			//enemyHUD.updatePower(enemyUnit.currentPower);
-			//playerHUD.updatePower(playerUnit.currentPower);
 		} else {
-			Debug.Log("Equal scores");
+			dialogueText.text = "Attack unsucessful!";
+			if(playerPower == 0 && enemyPower == 0) {
+				yield return new WaitForSeconds(1f);
+				dialogueText.text = "You both ran out of power!";
+				yield return new WaitForSeconds(1f);
+				dialogueText.text = "Power replenished!";
+				playerUnit.setPower(playerUnit.power);
+				enemyUnit.setPower(enemyUnit.power);
+				playerHUD.updatePower(playerUnit.power);
+			}
 			yield return new WaitForSeconds(2f);
 		}
-		
-
-		dialogueText.text = "Deciding!";
-		yield return new WaitForSeconds(1f);		
+				
 		dialogueText.text = "Your turn!";
 
+
+		// checking if either object is dead at every turn
 		if (playerisDead) {
+			playerUnit.Death();
+			SoundFX.PlaySound("death");
 			state = BattleState.LOST;
-			EndBattle();
-		} else if (enemyisDead) {
-			state = BattleState.WON;
-			EndBattle();
-		} 
 
-	}
-	
-	/*
-	namespace Namespace {
-    
-		using System;
-		
-		public static class Module {
-			
-			public static object print_hp(int first_score, int second_score) {
-				var end = false;
-				var first_hp = 20;
-				var second_hp = 20;
-				while (!end) {
-					first_score = power;
-					second_score = randomPower;
-					if (first_score > second_score) {
-						second_hp -= 10;
-						if (first_hp == 10) {
-							first_hp += 10;
-						}
-					} else if (second_score > first_score) {
-						first_hp -= 10;
-						if (second_hp == 10) {
-							second_hp += 10;
-						}
-					}
-					if (first_hp == 0) {
-						Console.WriteLine("Second player wins!");
-						end = true;
-					} else if (second_hp == 0) {
-						Console.WriteLine("First player wins!");
-						end = true;
-					} else {
-						continue;
-					}
-				}
+			//yield return new WaitForSeconds(1.5f);
+			numCoins -= 5;
+			EndBattle();
+			if(earn == 1) {
+				dialogueText.text = "You lost 5 coins";
+				dialogueText.text = "";
+			} else {
+				dialogueText.text = "You lost 0 coins";
+				dialogueText.text = "";
 			}
-		}
-	}
-		/*
-	
-		/*
-		// check if the enemy is dead after the attack 
-		bool isDead = playerUnit.TakeDamage(enemyUnit.damage);
-
-		playerHUD.SetHP(playerUnit.currentHP);
-
-		yield return new WaitForSeconds(1f);
-
-		if(isDead){
-			state = BattleState.LOST;
+			
+			yield return new WaitForSeconds(1.5f);
+			returnButton.GetComponent<GameOver>().appear();
+		} else if (enemyisDead) {
+			enemyUnit.Death();
+			state = BattleState.WON;
+			
+			//yield return new WaitForSeconds(1.5f);
+			numCoins += 5;
 			EndBattle();
-		} else{
-			state = BattleState.PLAYERTURN;
-			PlayerTurn();
-		}
-		
-	}*/
+			//yield return new WaitForSeconds(1.5f);
+
+			if(earn == 1) {
+				dialogueText.text = "You won 5 coins";
+				dialogueText.text = "";
+			} else {
+				dialogueText.text = "You won 0 coins";
+				dialogueText.text = "";
+			}
+
+			yield return new WaitForSeconds(1.5f);
+			returnButton.GetComponent<GameOver>().appear();
+		} 
+	}
 
 	void EndBattle(){
+		if(earn == 1) {
+			// updating the number of coins
+			PlayerPrefs.SetInt("coins", numCoins);
+		}
+		
 		if(state == BattleState.WON){
 			dialogueText.text = "You won the battle!";
 		} else if (state == BattleState.LOST){
 			dialogueText.text = "You were defeated.";
 		}
+		
 	}
 }

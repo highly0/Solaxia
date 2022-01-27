@@ -4,6 +4,11 @@ ScriptsOnlyBuild:
     - BattleHUD
     - BattleSystem
     - CameraAnchor
+    - CoinManagement
+    - GameOver
+    - MainMenu
+    - MusicShuffle
+    - SoundManagerScript
     - Unit
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
@@ -34,7 +39,7 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Slider
     - UnityEngine.UI.Text
   sceneClasses:
-    Assets/Scenes/SampleScene.unity:
+    Assets/Scenes/Loading.unity:
     - Class: 1
       Script: {instanceID: 0}
     - Class: 4
@@ -47,50 +52,107 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
-    - Class: 49
-      Script: {instanceID: 0}
     - Class: 81
+      Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 1474}
+      Script: {instanceID: 1518}
+    - Class: 114
+      Script: {instanceID: 2100}
+    - Class: 114
+      Script: {instanceID: 2102}
+    - Class: 114
+      Script: {instanceID: 2408}
+    - Class: 114
+      Script: {instanceID: 2526}
+    - Class: 114
+      Script: {instanceID: 2704}
+    - Class: 114
+      Script: {instanceID: 2892}
+    - Class: 114
+      Script: {instanceID: 2982}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
+    Assets/Scenes/Main.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 74
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
+    - Class: 91
+      Script: {instanceID: 0}
+    - Class: 95
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 1518}
     - Class: 114
       Script: {instanceID: 1652}
     - Class: 114
-      Script: {instanceID: 1672}
+      Script: {instanceID: 1698}
     - Class: 114
       Script: {instanceID: 1718}
     - Class: 114
-      Script: {instanceID: 1758}
+      Script: {instanceID: 1764}
     - Class: 114
-      Script: {instanceID: 2038}
+      Script: {instanceID: 2102}
     - Class: 114
-      Script: {instanceID: 2048}
+      Script: {instanceID: 2236}
     - Class: 114
-      Script: {instanceID: 2176}
+      Script: {instanceID: 2408}
     - Class: 114
-      Script: {instanceID: 2340}
+      Script: {instanceID: 2526}
     - Class: 114
-      Script: {instanceID: 2456}
+      Script: {instanceID: 2704}
     - Class: 114
-      Script: {instanceID: 2624}
+      Script: {instanceID: 2746}
     - Class: 114
-      Script: {instanceID: 2666}
+      Script: {instanceID: 2836}
     - Class: 114
-      Script: {instanceID: 2808}
+      Script: {instanceID: 2892}
     - Class: 114
-      Script: {instanceID: 2896}
+      Script: {instanceID: 2982}
     - Class: 114
-      Script: {instanceID: 3748}
+      Script: {instanceID: 4292}
     - Class: 114
-      Script: {instanceID: 3860}
+      Script: {instanceID: 4600}
     - Class: 114
-      Script: {instanceID: 4126}
-    - Class: 114
-      Script: {instanceID: 4480}
-    - Class: 114
-      Script: {instanceID: 16154}
+      Script: {instanceID: 21052}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -110,6 +172,71 @@ ScriptsOnlyBuild:
     - Class: 224
       Script: {instanceID: 0}
     - Class: 850595691
+      Script: {instanceID: 0}
+    Assets/Scenes/Menu.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 49
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 1518}
+    - Class: 114
+      Script: {instanceID: 1804}
+    - Class: 114
+      Script: {instanceID: 2090}
+    - Class: 114
+      Script: {instanceID: 2102}
+    - Class: 114
+      Script: {instanceID: 2376}
+    - Class: 114
+      Script: {instanceID: 2408}
+    - Class: 114
+      Script: {instanceID: 2526}
+    - Class: 114
+      Script: {instanceID: 2704}
+    - Class: 114
+      Script: {instanceID: 2892}
+    - Class: 114
+      Script: {instanceID: 2982}
+    - Class: 114
+      Script: {instanceID: 3842}
+    - Class: 114
+      Script: {instanceID: 3956}
+    - Class: 114
+      Script: {instanceID: 4226}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
       Script: {instanceID: 0}
   scriptHashData:
   - hash:
@@ -142,6 +269,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: SignalAsset
+  - hash:
+      serializedVersion: 2
+      Hash: f99578b083b41a7a50501e0c1f5bfdff
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: MusicShuffle
   - hash:
       serializedVersion: 2
       Hash: bcaee4c2a83047257b5f47d6ed264b75
@@ -192,7 +325,7 @@ ScriptsOnlyBuild:
     className: Shadow
   - hash:
       serializedVersion: 2
-      Hash: e748ed3c1f25fe3dd85c3bd635f142c5
+      Hash: 69554780ad69cbeab454d70267ab5ac4
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: BattleSystem
@@ -234,6 +367,12 @@ ScriptsOnlyBuild:
     className: TMP_StyleSheet
   - hash:
       serializedVersion: 2
+      Hash: 7de2c64cc893fdef4b6dd65584aeae65
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CoinManagement
+  - hash:
+      serializedVersion: 2
       Hash: 699619b86d9359741a4f58540298c80b
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -252,7 +391,7 @@ ScriptsOnlyBuild:
     className: RawImage
   - hash:
       serializedVersion: 2
-      Hash: 73c5c0eb5a5e674d75620df2a1f33c2b
+      Hash: 5da718b316247660f3c265605483fcfd
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Unit
@@ -262,6 +401,12 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: TMPro.Examples
     className: Benchmark02
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: MainMenu
   - hash:
       serializedVersion: 2
       Hash: a1aa98c78061c6f03a8c124cda576e67
@@ -364,6 +509,12 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: TMPro.Examples
     className: Benchmark03
+  - hash:
+      serializedVersion: 2
+      Hash: db383debccf025fb7548a9120b6528c5
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: GameOver
   - hash:
       serializedVersion: 2
       Hash: 748dd2a2a28da4e618912da5ac45684b
@@ -678,6 +829,12 @@ ScriptsOnlyBuild:
     className: TMP_ScrollbarEventHandler
   - hash:
       serializedVersion: 2
+      Hash: ba49671eb227a8a0b571baa7fcd8372b
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: SoundManagerScript
+  - hash:
+      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Assembly-CSharp.dll
     namespaceName: TMPro.Examples
@@ -756,5 +913,7 @@ ScriptsOnlyBuild:
     className: TMP_TextEventCheck
   platform: 2
   scenePathNames:
-  - Assets/Scenes/SampleScene.unity
-  playerPath: /Users/sergeypetrakov/Documents/Documents/Skoltech/ISP/Solaxia/temp.app
+  - Assets/Scenes/Menu.unity
+  - Assets/Scenes/Loading.unity
+  - Assets/Scenes/Main.unity
+  playerPath: /Users/haile/Desktop/Turn-based combat/Demo.app
